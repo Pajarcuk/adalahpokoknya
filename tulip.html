@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pink Tulips For You 🌷</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: #09060b;
+      font-family: Georgia, serif;
+      user-select: none;
+      transition: background 2s ease;
+    }
+    body.opened { background: radial-gradient(circle at center, #261622 0%, #150912 60%, #080306 100%); }
+
+    .back-btn {
+      position: absolute;
+      top: 3vmin; left: 3vmin;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      padding: 1vmin 2vmin;
+      border-radius: 2vmin;
+      text-decoration: none;
+      font-size: 1.8vmin;
+      z-index: 40;
+    }
+
+    .title {
+      position: absolute;
+      top: 12%;
+      font-size: 6vmin;
+      font-style: italic;
+      font-weight: bold;
+      color: #f5a9b8;
+      text-shadow: 0 0 15px #eb6d8e;
+      animation: pulse-text 1.6s infinite alternate;
+      z-index: 30;
+    }
+    body.opened .title { animation: none; }
+    @keyframes pulse-text { from { opacity: 0.55; } to { opacity: 1; } }
+
+    .moon {
+      position: absolute;
+      top: 10%; right: 10%;
+      width: 7vmin; height: 7vmin;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fffdfa, #fde8e8);
+      box-shadow: 0 0 45px 12px rgba(253, 232, 232, 0.45);
+      opacity: 0;
+      transition: opacity 2s ease 0.4s;
+    }
+    body.opened .moon { opacity: 1; }
+
+    /* Bintang Berkedip Biasa */
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+    @keyframes twinkle { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+    /* ================= BINTANG JATUH (SHOOTING STAR) ================= */
+    .shooting-star {
+      position: absolute;
+      width: 110px;
+      height: 2px;
+      background: linear-gradient(to right, #ffffff, rgba(255, 255, 255, 0));
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0;
+      animation: shoot 2.2s ease-out forwards;
+      z-index: 1;
+    }
+
+    .shooting-star::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: -2px;
+      width: 6px;
+      height: 6px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px 2px #ffffff, 0 0 16px 4px #f5a9b8;
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: rotate(-35deg) translateX(0) scaleX(0);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+        transform: rotate(-35deg) translateX(-60px) scaleX(1);
+      }
+      100% {
+        transform: rotate(-35deg) translateX(-650px) scaleX(0.4);
+        opacity: 0;
+      }
+    }
+
+    /* Hati */
+    .heart-wrap { position: relative; z-index: 25; cursor: pointer; transition: transform 0.8s, opacity 0.8s; }
+    body.opened .heart-wrap { transform: scale(0); opacity: 0; pointer-events: none; }
+    .heart {
+      position: relative;
+      width: 16vmin; height: 16vmin;
+      transform: rotate(-45deg) translateY(-2vmin);
+      background: radial-gradient(circle at 30% 30%, #fde8e8, #f5a9b8 45%, #eb6d8e 90%);
+      filter: drop-shadow(0 0 4vmin rgba(235, 109, 142, 0.8));
+      animation: heartbeat 1.2s infinite;
+    }
+    .heart::before, .heart::after {
+      content: ""; position: absolute; width: 16vmin; height: 16vmin; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fde8e8, #f5a9b8 45%, #eb6d8e 90%);
+    }
+    .heart::before { top: -8vmin; left: 0; }
+    .heart::after { top: 0; left: 8vmin; }
+    .heart .shine {
+      position: absolute; top: 2vmin; left: 1vmin; width: 4vmin; height: 6vmin;
+      background: rgba(255,255,255,0.65); border-radius: 50%; transform: rotate(45deg); filter: blur(2px); z-index: 2;
+    }
+    @keyframes heartbeat { 0%, 100% { transform: rotate(-45deg) translateY(-2vmin) scale(1); } 50% { transform: rotate(-45deg) translateY(-2vmin) scale(1.12); } }
+
+    /* Buket */
+    .bouquet {
+      position: absolute;
+      bottom: 4vmin; left: 50%;
+      transform: translateX(-50%);
+      width: 66vmin; height: 64vmin;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    body.opened .bouquet { opacity: 1; }
+
+    .paper {
+      position: absolute; bottom: 4vmin; left: 50%; width: 12.5vmin; height: 35vmin; margin-left: -6.25vmin;
+      transform-origin: bottom center; transform: rotate(var(--a));
+      background: linear-gradient(to right, rgba(0,0,0,0.18), rgba(255,255,255,0.25) 50%, rgba(0,0,0,0.22)),
+                  linear-gradient(to bottom, #fde8e8 0%, #f5a9b8 50%, #eb6d8e 100%);
+      clip-path: polygon(50% 0%, 88% 50%, 100% 100%, 0% 100%, 12% 50%);
+      animation: open-wrap 1s ease forwards;
+    }
+    .paper.front {
+      width: 10.5vmin; height: 20.5vmin; margin-left: -5.25vmin;
+      background: linear-gradient(to right, rgba(0,0,0,0.15), rgba(255,255,255,0.3) 50%, rgba(0,0,0,0.18)),
+                  linear-gradient(to bottom, #ffffff 0%, #fde8e8 40%, #f5a9b8 100%);
+    }
+    @keyframes open-wrap { from { transform: rotate(calc(var(--a) * 0.3)) scaleY(0.1); opacity: 0; } to { transform: rotate(var(--a)) scaleY(1); opacity: 1; } }
+
+    .ribbon { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 16; }
+    .ribbon .knot { width: 5.5vmin; height: 5.5vmin; border-radius: 30%; background: linear-gradient(140deg, #eb6d8e, #c74b6c); box-shadow: 0 0 2vmin rgba(235, 109, 142, 0.6); }
+    .ribbon .tail { position: absolute; top: 2vmin; width: 3.5vmin; height: 11vmin; background: linear-gradient(#eb6d8e, #b83756); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+    .ribbon .tail.left { left: -2.8vmin; transform: rotate(22deg); }
+    .ribbon .tail.right { right: -2.8vmin; transform: rotate(-22deg); }
+
+    /* Tulip Item */
+    .flower-item { position: absolute; bottom: 8vmin; left: 50%; width: 0.9vmin; height: var(--h); margin-left: -0.45vmin; transform-origin: bottom center; animation: grow 1.2s forwards; opacity: 0; }
+    @keyframes grow { from { transform: rotate(var(--a)) scaleY(0); opacity: 0; } to { transform: rotate(var(--a)) scaleY(1); opacity: 1; } }
+    .stem { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; border-radius: 0.4vmin; background: linear-gradient(to top, #738334, #b9cc66); }
+    .leaf { position: absolute; width: 2.8vmin; height: 7.5vmin; background: linear-gradient(135deg, #b9cc66 0%, #738334 100%); z-index: 1; transform-origin: bottom center; }
+    .leaf.left { bottom: 6vmin; left: -1.3vmin; border-radius: 0 100% 0 100%; transform: rotate(-30deg); }
+    .leaf.right { bottom: 12vmin; right: -1.3vmin; border-radius: 100% 0 100% 0; transform: rotate(30deg); }
+
+    .tulip-head { position: absolute; top: 0; left: 50%; transform: translate(-50%, -85%); width: 8vmin; height: 10.5vmin; filter: drop-shadow(0 0 2vmin rgba(245, 169, 184, 0.75)); }
+    .petal { position: absolute; bottom: 0; left: 50%; border-radius: 50% 50% 45% 45%; transform-origin: bottom center; }
+    .petal.back { width: 6.2vmin; height: 10vmin; transform: translateX(-50%); background: linear-gradient(to bottom, #eb6d8e 0%, #b83756 100%); z-index: 1; }
+    .petal.left { width: 5.6vmin; height: 9.2vmin; transform: translateX(-70%) rotate(-20deg); background: linear-gradient(135deg, #eb6d8e 0%, #f5a9b8 50%, #fde8e8 100%); z-index: 2; }
+    .petal.right { width: 5.6vmin; height: 9.2vmin; transform: translateX(-30%) rotate(20deg); background: linear-gradient(-135deg, #eb6d8e 0%, #f5a9b8 50%, #fde8e8 100%); z-index: 2; }
+    .petal.center { width: 5.2vmin; height: 8.6vmin; transform: translateX(-50%); background: linear-gradient(to bottom, #eb6d8e 0%, #f5a9b8 40%, #fde8e8 100%); z-index: 3; }
+
+    /* Amplop & Surat */
+    .envelope {
+      position: absolute; bottom: 8vmin; left: 50%; transform: translateX(-50%) scale(0);
+      width: 42vmin; height: 28vmin; border-radius: 1.5vmin; background: linear-gradient(160deg, #fde8e8, #f5a9b8);
+      box-shadow: 0 1vmin 4vmin rgba(0,0,0,0.35); display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 20; cursor: pointer; transition: transform 0.3s;
+    }
+    body.letter-in .envelope { animation: pop 0.7s forwards; }
+    .envelope:hover { transform: translateX(-50%) scale(1.06); }
+    @keyframes pop { from { transform: translateX(-50%) scale(0); } to { transform: translateX(-50%) scale(1); } }
+
+    .mini-heart {
+      position: relative; width: 3.5vmin; height: 3.5vmin; background: #eb6d8e; transform: rotate(-45deg) translateY(-0.4vmin);
+      animation: pulse-h 1.2s infinite;
+    }
+    .mini-heart::before, .mini-heart::after { content: ""; position: absolute; width: 3.5vmin; height: 3.5vmin; background: #eb6d8e; border-radius: 50%; }
+    .mini-heart::before { top: -1.75vmin; left: 0; }
+    .mini-heart::after { top: 0; left: 1.75vmin; }
+    @keyframes pulse-h { 0%, 100% { transform: rotate(-45deg) translateY(-0.4vmin) scale(1); } 50% { transform: rotate(-45deg) translateY(-0.4vmin) scale(1.25); } }
+    .env-hint { margin-top: 3vmin; font-size: 1.8vmin; font-family: Arial; font-weight: bold; color: #c74b6c; }
+
+    .letter {
+      position: absolute; bottom: 16vmin; left: 50%; transform: translateX(-50%) scale(0);
+      width: 60vmin; max-width: 90vw; background: #fffdf9; border-radius: 1.5vmin; padding: 3.5vmin 3vmin;
+      border: 2px dashed #f5a9b8; text-align: center; font-family: Arial, sans-serif;
+      box-shadow: 0 2vmin 6vmin rgba(0,0,0,0.55); z-index: 35; transition: transform 0.6s cubic-bezier(0.3, 1.5, 0.5, 1);
+    }
+    body.letter-open .letter { transform: translateX(-50%) scale(1); }
+    .letter .close-btn { position: absolute; top: 1vmin; right: 2vmin; font-size: 3.5vmin; color: #999; cursor: pointer; }
+    .letter h3 { font-size: 2.6vmin; margin-bottom: 1vmin; color: #eb6d8e; }
+    .letter p { font-size: 2vmin; line-height: 1.6; color: #444; }
+    .letter .cute { font-size: 7.5vmin; margin: 1.5vmin 0; }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-btn">&#8592; Ganti Pilihan</a>
+  <div class="moon"></div>
+  <div id="stars"></div>
+  <div class="title" id="title">TAP TO OPEN</div>
+
+  <div class="heart-wrap" id="heartWrap">
+    <div class="heart"><div class="shine"></div></div>
+  </div>
+
+  <div class="bouquet" id="bouquet">
+    <div id="flowersBox"></div>
+    <div class="ribbon">
+      <div class="tail left"></div>
+      <div class="tail right"></div>
+      <div class="knot"></div>
+    </div>
+  </div>
+
+  <div class="envelope" id="envelope">
+    <div class="mini-heart"></div>
+    <span class="env-hint">Tap to open 💌</span>
+  </div>
+
+  <div class="letter" id="letter">
+    <span class="close-btn" id="closeBtn">&times;</span>
+    <h3>Happy Graduation! 🎓🌷</h3>
+    <p>Selamat atas kelulusanmu ya zyy!.</p>
+    <div class="cute">🎓💐✨</div>
+    <p>Karena aku ga boleh ngirimin bunga jadi aku bini ini buat kamu,Semoga kedepannya selalu lancar terus keinginan buat umrah-nya segera tercapai 🎉</p>
+  </div>
+
+  <script>
+    const backAngles = [-78, -52, -26, 0, 26, 52, 78];
+    const frontAngles = [-42, -14, 14, 42];
+
+    const tulipPositions = [
+      { a: -28, h: 43, z: 3 },
+      { a: -14, h: 47, z: 4 },
+      { a:   0, h: 49, z: 4 },
+      { a:  14, h: 47, z: 4 },
+      { a:  28, h: 43, z: 3 },
+      { a: -38, h: 35, z: 5 },
+      { a: -21, h: 38, z: 5 },
+      { a:  -7, h: 40, z: 6 },
+      { a:   7, h: 40, z: 6 },
+      { a:  21, h: 38, z: 5 },
+      { a:  38, h: 35, z: 5 },
+      { a: -16, h: 31, z: 7 },
+      { a:   0, h: 32, z: 8 },
+      { a:  16, h: 31, z: 7 },
+      { a:  -8, h: 25, z: 9 },
+      { a:   8, h: 25, z: 9 }
+    ];
+
+    const bouquet = document.getElementById("bouquet");
+    const flowersBox = document.getElementById("flowersBox");
+
+    // Wrap
+    backAngles.forEach((a, i) => {
+      const p = document.createElement("div");
+      p.className = "paper"; p.style.setProperty("--a", a + "deg");
+      p.style.animationDelay = (0.1 + i * 0.07) + "s"; p.style.zIndex = 2;
+      bouquet.insertBefore(p, bouquet.firstChild);
+    });
+    frontAngles.forEach((a, i) => {
+      const p = document.createElement("div");
+      p.className = "paper front"; p.style.setProperty("--a", a + "deg");
+      p.style.animationDelay = (0.6 + i * 0.07) + "s"; p.style.zIndex = 14;
+      bouquet.insertBefore(p, bouquet.firstChild);
+    });
+
+    // Render Bunga
+    tulipPositions.forEach((pos, i) => {
+      const f = document.createElement("div");
+      f.className = "flower-item";
+      f.style.setProperty("--a", pos.a + "deg");
+      f.style.setProperty("--h", pos.h + "vmin");
+      f.style.zIndex = pos.z;
+      f.style.animationDelay = (0.8 + i * 0.07) + "s";
+      f.innerHTML = `
+        <div class="stem"></div>
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
+        <div class="tulip-head">
+          <div class="petal back"></div>
+          <div class="petal left"></div>
+          <div class="petal right"></div>
+          <div class="petal center"></div>
+        </div>
+      `;
+      flowersBox.appendChild(f);
+    });
+
+    // Bintang Diam Berkedip
+    const starsBox = document.getElementById("stars");
+    for (let i = 0; i < 50; i++) {
+      const s = document.createElement("div");
+      s.className = "star";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.top = Math.random() * 100 + "vh";
+      s.style.animationDelay = Math.random() * 3 + "s";
+      starsBox.appendChild(s);
+    }
+
+    // ================= FUNGSI BINTANG JATUH OTOMATIS =================
+    function spawnShootingStar() {
+      const star = document.createElement("div");
+      star.className = "shooting-star";
+      // Posisi acak di area kanan atas layar
+      star.style.top = Math.random() * 45 + "vh";
+      star.style.left = Math.random() * 60 + 40 + "vw";
+      star.style.animationDuration = (Math.random() * 1 + 1.6) + "s";
+      document.body.appendChild(star);
+
+      // Hapus elemen setelah animasinya selesai
+      setTimeout(() => {
+        star.remove();
+      }, 2600);
+    }
+
+    // Munculkan bintang jatuh setiap 1.5 - 2 detik secara berkala
+    setInterval(spawnShootingStar, 1800);
+
+    // Interaksi
+    const heartWrap = document.getElementById("heartWrap");
+    const title = document.getElementById("title");
+    const envelope = document.getElementById("envelope");
+    const closeBtn = document.getElementById("closeBtn");
+    const letter = document.getElementById("letter");
+
+    heartWrap.addEventListener("click", () => {
+      document.body.classList.add("opened");
+      title.textContent = "Flowers For You";
+      setTimeout(() => document.body.classList.add("letter-in"), 2800);
+    }, { once: true });
+
+    envelope.addEventListener("click", (e) => { e.stopPropagation(); document.body.classList.add("letter-open"); });
+    closeBtn.addEventListener("click", (e) => { e.stopPropagation(); document.body.classList.remove("letter-open"); });
+    letter.addEventListener("click", (e) => e.stopPropagation());
+    document.body.addEventListener("click", () => {
+      if (document.body.classList.contains("letter-open")) document.body.classList.remove("letter-open");
+    });
+  </script>
+</body>
+</html>

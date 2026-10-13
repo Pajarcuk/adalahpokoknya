@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flowers For You ✨</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #09060e;
+      font-family: Georgia, serif;
+      padding: 20px;
+      gap: 20px;
+    }
+    .title {
+      color: #fff;
+      font-size: 1.8rem;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+    .video-box {
+      width: 100%;
+      max-width: 320px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    video { width: 100%; max-height: 48vh; display: block; outline: none; }
+    
+    .cards-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      animation: fadeIn 0.8s ease;
+    }
+    .hidden { display: none !important; }
+    .subtitle { color: #ffe4b5; font-size: 1.2rem; }
+    .cards { display: flex; gap: 20px; }
+    
+    .card {
+      width: 150px;
+      padding: 25px 15px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-align: center;
+      text-decoration: none;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover { transform: translateY(-6px); }
+    .card .icon { font-size: 2.8rem; display: block; margin-bottom: 10px; }
+    .card h3 { font-size: 1.1rem; margin-bottom: 5px; }
+    .card p { font-size: 0.8rem; font-family: Arial, sans-serif; color: #ddd; }
+    
+    .pink-card h3 { color: #f5a9b8; }
+    .pink-card:hover { border-color: #eb6d8e; box-shadow: 0 8px 25px rgba(235, 109, 142, 0.4); }
+    .yellow-card h3 { color: #fde047; }
+    .yellow-card:hover { border-color: #f59e0b; box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4); }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <h2 class="title">Tonton video ini dulu 🎬</h2>
+
+  <div class="video-box">
+    <video id="introVideo" controls playsinline>
+      <source src="adalah.mp4" type="video/mp4">
+      Browser tidak mendukung video ini.
+    </video>
+  </div>
+
+  <div class="cards-wrapper hidden" id="cardsWrapper">
+    <p class="subtitle">Sekarang buka deh mau yang mana ✨</p>
+    <div class="cards">
+      <a href="tulip.html" class="card pink-card">
+        <span class="icon">🌷</span>
+        <h3>Pink Tulips</h3>
+        <p>Sweet & romantic</p>
+      </a>
+      <a href="sunflower.html" class="card yellow-card">
+        <span class="icon">🌻</span>
+        <h3>Sunflowers</h3>
+        <p>Warm & cheerful</p>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const introVideo = document.getElementById("introVideo");
+    const cardsWrapper = document.getElementById("cardsWrapper");
+
+    introVideo.addEventListener("ended", () => {
+      cardsWrapper.classList.remove("hidden");
+      cardsWrapper.scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
